@@ -101,7 +101,7 @@ public class SubprocessWithTimerTest {
     startProcess.sendBodyAndProperty("", "maxWaitTime", maxWaitTime.toString());
     
     longRunningMock.assertIsSatisfied();
-//    shouldNeverBeCalledMock.assertIsSatisfied();
+    shouldNeverBeCalledMock.assertIsSatisfied();
     timeoutHandlerMock.assertIsSatisfied();
   }
 
