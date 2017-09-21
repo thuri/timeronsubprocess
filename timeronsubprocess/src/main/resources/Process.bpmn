@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="myProcess" name="myProcess" isExecutable="true">
+    <startEvent id="startevent1" name="Start"></startEvent>
+    <subProcess id="subprocess1" name="Sub Process">
+      <startEvent id="startevent2" name="Start"></startEvent>
+      <serviceTask id="callCamel" name="Call Camel Route" activiti:delegateExpression="${camel}"></serviceTask>
+      <sequenceFlow id="flow2" sourceRef="startevent2" targetRef="callCamel"></sequenceFlow>
+      <endEvent id="endevent1" name="End"></endEvent>
+      <serviceTask id="shouldNeverBeCalled" name="Should Never be Called" activiti:delegateExpression="${camel}"></serviceTask>
+      <sequenceFlow id="flow5" sourceRef="callCamel" targetRef="shouldNeverBeCalled"></sequenceFlow>
+      <endEvent id="endevent3" name="End"></endEvent>
+      <sequenceFlow id="flow6" sourceRef="shouldNeverBeCalled" targetRef="endevent3"></sequenceFlow>
+    </subProcess>
+    <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="subprocess1"></sequenceFlow>
+    <endEvent id="endevent2" name="End"></endEvent>
+    <sequenceFlow id="flow4" sourceRef="subprocess1" targetRef="endevent2"></sequenceFlow>
+    <boundaryEvent id="boundarytimer1" name="Timer" attachedToRef="subprocess1" cancelActivity="true">
+      <timerEventDefinition>
+        <timeDuration>${maxWaitTime}</timeDuration>
+      </timerEventDefinition>
+    </boundaryEvent>
+    <serviceTask id="timeoutHandler" name="TimeoutHandler" activiti:delegateExpression="${camel}"></serviceTask>
+    <sequenceFlow id="flow7" sourceRef="boundarytimer1" targetRef="timeoutHandler"></sequenceFlow>
+    <endEvent id="endevent4" name="End"></endEvent>
+    <sequenceFlow id="flow8" sourceRef="timeoutHandler" targetRef="endevent4"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_myProcess">
+    <bpmndi:BPMNPlane bpmnElement="myProcess" id="BPMNPlane_myProcess">
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="172.0" y="235.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="subprocess1" id="BPMNShape_subprocess1">
+        <omgdc:Bounds height="216.0" width="441.0" x="280.0" y="145.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="startevent2" id="BPMNShape_startevent2">
+        <omgdc:Bounds height="35.0" width="35.0" x="320.0" y="238.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="callCamel" id="BPMNShape_callCamel">
+        <omgdc:Bounds height="71.0" width="105.0" x="400.0" y="220.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="600.0" y="230.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="shouldNeverBeCalled" id="BPMNShape_shouldNeverBeCalled">
+        <omgdc:Bounds height="71.0" width="105.0" x="530.0" y="220.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent3" id="BPMNShape_endevent3">
+        <omgdc:Bounds height="35.0" width="35.0" x="670.0" y="238.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="boundarytimer1" id="BPMNShape_boundarytimer1">
+        <omgdc:Bounds height="30.0" width="30.0" x="354.0" y="340.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent2" id="BPMNShape_endevent2">
+        <omgdc:Bounds height="35.0" width="35.0" x="840.0" y="235.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="timeoutHandler" id="BPMNShape_timeoutHandler">
+        <omgdc:Bounds height="55.0" width="105.0" x="316.0" y="390.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent4" id="BPMNShape_endevent4">
+        <omgdc:Bounds height="35.0" width="35.0" x="466.0" y="400.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="355.0" y="255.0"></omgdi:waypoint>
+        <omgdi:waypoint x="400.0" y="255.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="505.0" y="255.0"></omgdi:waypoint>
+        <omgdi:waypoint x="530.0" y="255.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="635.0" y="255.0"></omgdi:waypoint>
+        <omgdi:waypoint x="670.0" y="255.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="207.0" y="252.0"></omgdi:waypoint>
+        <omgdi:waypoint x="280.0" y="253.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="721.0" y="253.0"></omgdi:waypoint>
+        <omgdi:waypoint x="840.0" y="252.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
+        <omgdi:waypoint x="369.0" y="370.0"></omgdi:waypoint>
+        <omgdi:waypoint x="368.0" y="390.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+        <omgdi:waypoint x="421.0" y="417.0"></omgdi:waypoint>
+        <omgdi:waypoint x="466.0" y="417.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
